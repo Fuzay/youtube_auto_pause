@@ -2,6 +2,7 @@ if (window.ytAutoPauseInjected !== true) {
   window.ytAutoPauseInjected = true;
   let manuallyPaused = false;
   let automaticallyPaused = false;
+  let isMouseOnPage = true;
 
   // Send message to service worker
   function sendMessage(message) {
@@ -31,6 +32,18 @@ if (window.ytAutoPauseInjected !== true) {
     },
     false
   );
+
+  document.addEventListener('mouseenter', function() {
+    if (document.hidden !== undefined) {
+        sendMessage({ minimized: false });
+      }
+  });
+
+  document.addEventListener('mouseleave', function() {
+    if (document.hidden !== undefined) {
+        sendMessage({ minimized: true });
+      }
+  });
 
   // Listen media commands from the service worker
   chrome.runtime.onMessage.addListener(async function (
